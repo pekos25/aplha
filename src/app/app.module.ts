@@ -22,14 +22,14 @@ const appRoutes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'login', component: LoginComponent },
 
-  { path: 'myorders', component: MyOrdersComponent ,canActivate :[AuthGuardService] },
-  { path: 'shopping-cart', component: ShoppingCartComponent ,canActivate :[AuthGuardService]},
-  { path: 'products', component: ProductsComponent ,canActivate :[AuthGuardService]},
-  
-  { path: 'admin-products', component: AdminProductsComponent ,canActivate :[AuthGuardService]},
-  { path: 'admin-orders', component: AdminOrdersComponent ,canActivate :[AuthGuardService]},
+  { path: 'myorders', component: MyOrdersComponent , canActivate : [AuthGuardService] },
+  { path: 'shopping-cart', component: ShoppingCartComponent , canActivate : [AuthGuardService]},
+  { path: 'products', component: ProductsComponent , canActivate : [AuthGuardService]},
+
+  { path: 'admin-products', component: AdminProductsComponent , canActivate : [AuthGuardService]},
+  { path: 'admin-orders', component: AdminOrdersComponent , canActivate : [AuthGuardService]},
   { path: '**', component: HomeComponent },
-]
+];
 
 @NgModule({
   declarations: [

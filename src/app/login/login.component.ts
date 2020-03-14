@@ -8,17 +8,17 @@ import { AuthService } from '../auth.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
- 
+
   constructor(public authService: AuthService ) {
-    authService.afAuth.authState.subscribe(x=> console.log(x));
-  
+    authService.afAuth.authState.subscribe(x => console.log(x));
+
    }
 
   ngOnInit(): void {
   }
 
-  login(){  
+  login() {
      this.authService.GoogleAuth();
-          
+
   }
 }

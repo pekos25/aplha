@@ -8,14 +8,14 @@ import { AuthService } from '../auth.service';
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent  {
-  
-  constructor(public authService: AuthService ) { 
-        
+
+  constructor(public authService: AuthService ) {
+
   }
 
-  logout(){
+  logout() {
     // this.authService.afAuth.auth.signOut();
-          this.authService.logout();  
+          this.authService.logout();
   }
 
 }
