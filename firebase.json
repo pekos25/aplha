@@ -1,0 +1,19 @@
+{
+  "hosting": [
+    {
+      "target": "alpha-frontend",
+      "public": "dist/alpha-frontend",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    }
+  ]
+}

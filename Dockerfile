@@ -18,6 +18,7 @@ COPY . src
 WORKDIR src
 RUN npm install --save-dev karma-chrome-launcher
 RUN npm install --save intl jquery bootstrap
+RUN npm install @angular/fire firebase --save
 RUN npm install && \
 npm rebuild node-sass && \
 ng build

@@ -35,7 +35,6 @@
             "scripts": [
               "node_modules/jquery/dist/jquery.slim.min.js",
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
-             
             ]
           },
           "configurations": {
@@ -128,6 +127,10 @@
               "devServerTarget": "alpha-frontend:serve:production"
             }
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {}
         }
       }
     }

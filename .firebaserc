@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "alpha-b1bb8": {
+      "hosting": {
+        "alpha-frontend": [
+          "alpha-b1bb8"
+        ]
+      }
+    }
+  }
+}

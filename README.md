@@ -13,8 +13,10 @@ git clone git@gitlab.yahuah.net:alpha/alpha-backend.git
 cd alpha-backend
 npm install bootstrap --save
 npm install jquery --save
+npm install @angular/fire firebase --save
+
 ng build
-ng serve --host 0.0.0.0 \--disable-host-check
+ng serve --host 0.0.0.0 --disable-host-check
 ```
 
 ### Git
