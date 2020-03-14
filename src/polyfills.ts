@@ -55,10 +55,12 @@
 /***************************************************************************************************
  * Zone JS is required by default for Angular itself.
  */
-import 'zone.js/dist/zone';  // Included with Angular CLI.
-
+import 'zone.js/dist/zone' // Included with Angular CLI.
 
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
-import 'intl';  // Run `npm install --save intl`
+import 'intl'; // Run `npm install --save intl`
+
+// Add global to window, assigning the value of window itself.
+(window as any).global = window
