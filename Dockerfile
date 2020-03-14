@@ -16,6 +16,8 @@ ENV CHROME_DRIVER=/usr/bin/chromedriver
 FROM env as dev
 COPY . src
 WORKDIR src
+RUN npm install --save-dev karma-chrome-launcher
+RUN npm install --save intl jquery bootstrap
 RUN npm install && \
 npm rebuild node-sass && \
 ng build
@@ -24,7 +26,7 @@ ng build
 
 FROM dev as test
 RUN ng lint && \
-ng test --watch=false --browsers=ChromiumNoSandbox
+npm run test-headless
 
 # release stage
 

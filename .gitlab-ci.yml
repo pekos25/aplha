@@ -1,0 +1,69 @@
+image: docker:latest
+
+variables:
+    IMAGE: $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG
+    DOMAIN: itspektar.net
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules
+
+before_script:
+  - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  script:
+  - docker build -t $IMAGE .
+  - docker push $IMAGE
+
+deploy_review:
+  stage: deploy
+  script:
+  - echo "Create service $CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG"
+  - docker pull $IMAGE
+  - docker service rm $CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG || true
+  - docker service create --name $CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG --publish 80 --network traefik-public --label "traefik.frontend.rule=Host:$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG.itspektar.net" --label "traefik.port=80" --label "traefik.backend.loadbalancer.swarm=true" --label "traefik.enable=true" --label "traefik.tags=traefik-public" --label "traefik.docker.network=traefik-public" --label "traefik.webservice.frontend.entryPoints=http,https" --detach --placement-pref 'spread=node.hostname' --constraint 'node.hostname==node' $IMAGE
+  environment:
+    name: review/$CI_COMMIT_REF_SLUG
+    url: http://$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG.$DOMAIN
+  when: on_success
+  tags:
+    - itspektar.net
+  only:
+    - branches
+
+deploy to node:
+  stage: deploy
+  script:
+  - echo "Create service $CI_PROJECT_NAME"
+  - docker pull $IMAGE
+  - docker service rm $CI_PROJECT_NAME || true
+  - docker service create --name $CI_PROJECT_NAME --publish 80 --network traefik-public --label "traefik.frontend.rule=Host:$CI_PROJECT_NAME.$DOMAIN" --label "traefik.port=80" --label "traefik.backend.loadbalancer.swarm=true" --label "traefik.enable=true" --label "traefik.tags=traefik-public" --label "traefik.docker.network=traefik-public" --label "traefik.webservice.frontend.entryPoints=http,https" --detach --placement-pref 'spread=node.hostname' --constraint 'node.hostname==node' $IMAGE
+  environment:
+    name: $CI_PROJECT_NAME
+    url: http://$CI_PROJECT_NAME.$DOMAIN
+  when: on_success
+  tags:
+    - itspektar.net
+  only:
+    - master
+
+stop_review:
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - echo "Remove service $CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG"
+    - docker service rm $CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG || true
+  when: manual
+  tags:
+    - itspektar.net
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    action: stop
