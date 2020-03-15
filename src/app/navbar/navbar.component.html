@@ -15,43 +15,41 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarCollapse">
     <ul class="navbar-nav mr-auto">
-      
       <li class="nav-item">
         <a class="nav-link" routerLink="/shopping-cart">Shopping cart</a>
       </li>
-        <ng-template #anonymousUser>
-          <li  class="nav-item">
-            <a class="nav-link" routerLink="/login">Login</a>
-          </li>
-        </ng-template>
-         <li *ngIf='authService.user$ | async as user ;else anonymousUser '  class="nav-item">
-            <div class="dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                role="button"
-                id="dropdownMenuLink"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
-               {{user.displayName}}
-              </a>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                <a class="dropdown-item" routerLink="/myorders">My Orders</a>
-                <a class="dropdown-item" routerLink="/admin-products">Admin Products</a>
-                <a class="dropdown-item" routerLink="/admin-orders">Admin Orders</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" (click)='logout()'>Logout</a>
-              </div>
-            </div>
-          </li>
-
-
-     
-     
-     
-      
+      <ng-template #anonymousUser>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/login">Login</a>
+        </li>
+      </ng-template>
+      <li
+        *ngIf="authService.user$ | async as user; else anonymousUser"
+        class="nav-item"
+      >
+        <div class="dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            role="button"
+            id="dropdownMenuLink"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            {{ user.displayName }}
+          </a>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <a class="dropdown-item" routerLink="/myorders">My Orders</a>
+            <a class="dropdown-item" routerLink="/admin-products"
+              >Admin Products</a
+            >
+            <a class="dropdown-item" routerLink="/admin-orders">Admin Orders</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" (click)="logout()">Logout</a>
+          </div>
+        </div>
+      </li>
     </ul>
     <form class="form-inline mt-2 mt-md-0">
       <input

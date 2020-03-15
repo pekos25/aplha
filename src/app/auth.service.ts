@@ -3,7 +3,6 @@ import * as firebase from 'firebase/app';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Observable } from 'rxjs';
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -17,7 +16,7 @@ export class AuthService {
   GoogleAuth() {
     // return this.AuthLogin(new firebase.auth.GoogleAuthProvider());
 
-   // Auth logic to run auth providers with signInWithRedirect
+    // Auth logic to run auth providers with signInWithRedirect
     return this.afAuth.auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider());
   }
 

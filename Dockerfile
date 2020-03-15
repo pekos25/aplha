@@ -1,5 +1,7 @@
 FROM nginx:alpine as env
 
+ARG BUILD_ARGS
+
 # fetch dependencies
 
 RUN apk add --no-cache nodejs nodejs-npm bash chromium nss chromium-chromedriver && \
@@ -19,9 +21,9 @@ WORKDIR src
 RUN npm install --save-dev karma-chrome-launcher
 RUN npm install --save intl jquery bootstrap
 RUN npm install @angular/fire firebase --save
-RUN npm install && \
-  npm rebuild node-sass && \
-  ng build
+RUN npm install \
+  && npm rebuild node-sass \
+  && ng build ${BUILD_ARGS}
 
 # lint and unit test
 
