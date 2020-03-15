@@ -19,7 +19,8 @@ stages:
 build:
   stage: build
   script:
-    - docker build -t $IMAGE .
+    - if [ $CI_COMMIT_REF_SLUG == "master" ]; then BUILD_ARGS=--prod; fi
+    - docker build --build-arg BUILD_ARGS=$BUILD_ARGS --tag $IMAGE .
     - docker push $IMAGE
 
 deploy_review:
