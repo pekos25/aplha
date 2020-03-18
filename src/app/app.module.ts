@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -22,13 +23,13 @@ const appRoutes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'login', component: LoginComponent },
 
-  { path: 'myorders', component: MyOrdersComponent , canActivate : [AuthGuardService] },
-  { path: 'shopping-cart', component: ShoppingCartComponent , canActivate : [AuthGuardService]},
-  { path: 'products', component: ProductsComponent , canActivate : [AuthGuardService]},
+  { path: 'myorders', component: MyOrdersComponent, canActivate: [AuthGuardService] },
+  { path: 'shopping-cart', component: ShoppingCartComponent, canActivate: [AuthGuardService] },
+  { path: 'products', component: ProductsComponent, canActivate: [AuthGuardService] },
 
-  { path: 'admin-products', component: AdminProductsComponent , canActivate : [AuthGuardService]},
-  { path: 'admin-orders', component: AdminOrdersComponent , canActivate : [AuthGuardService]},
-  { path: '**', component: HomeComponent },
+  { path: 'admin-products', component: AdminProductsComponent, canActivate: [AuthGuardService] },
+  { path: 'admin-orders', component: AdminOrdersComponent, canActivate: [AuthGuardService] },
+  { path: '**', component: HomeComponent }
 ];
 
 @NgModule({
@@ -48,6 +49,7 @@ const appRoutes: Routes = [
     HttpClientModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
+    AngularFirestoreModule,
     AppRoutingModule,
     RouterModule.forRoot(appRoutes)
   ],

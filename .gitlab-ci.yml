@@ -1,4 +1,6 @@
 image: docker:latest
+include:
+  - template: Code-Quality.gitlab-ci.yml
 
 variables:
   IMAGE: $CI_REGISTRY/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME:$CI_COMMIT_REF_SLUG
@@ -14,6 +16,7 @@ before_script:
 
 stages:
   - build
+  - test
   - deploy
 
 build:
@@ -29,7 +32,21 @@ deploy_review:
     - echo "Create service $CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG"
     - docker pull $IMAGE
     - docker service rm $CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG || true
-    - docker service create --name $CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG --publish 80 --network traefik-public --label "traefik.frontend.rule=Host:$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG.itspektar.net" --label "traefik.port=80" --label "traefik.backend.loadbalancer.swarm=true" --label "traefik.enable=true" --label "traefik.tags=traefik-public" --label "traefik.docker.network=traefik-public" --label "traefik.webservice.frontend.entryPoints=http,https" --detach --placement-pref 'spread=node.hostname' --constraint 'node.hostname==node' $IMAGE
+    - docker service create
+      --name $CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG
+      --publish 80
+      --network traefik-public
+      --label "traefik.frontend.rule=Host:$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG.itspektar.net"
+      --label "traefik.port=80"
+      --label "traefik.backend.loadbalancer.swarm=true"
+      --label "traefik.enable=true"
+      --label "traefik.tags=traefik-public"
+      --label "traefik.docker.network=traefik-public"
+      --label "traefik.webservice.frontend.entryPoints=http,https"
+      --detach
+      --placement-pref 'spread=node.hostname'
+      --constraint 'node.hostname==node'
+      $IMAGE
   environment:
     name: review/$CI_COMMIT_REF_SLUG
     url: https://$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG.$DOMAIN
@@ -47,7 +64,20 @@ deploy_node:
     - echo "Create service $CI_PROJECT_NAME"
     - docker pull $IMAGE
     - docker service rm $CI_PROJECT_NAME || true
-    - docker service create --name $CI_PROJECT_NAME --publish 80 --network traefik-public --label "traefik.frontend.rule=Host:$CI_PROJECT_NAME.$DOMAIN" --label "traefik.port=80" --label "traefik.backend.loadbalancer.swarm=true" --label "traefik.enable=true" --label "traefik.tags=traefik-public" --label "traefik.docker.network=traefik-public" --label "traefik.webservice.frontend.entryPoints=http,https" --detach --placement-pref 'spread=node.hostname' --constraint 'node.hostname==node' $IMAGE
+    - docker service create
+      --name $CI_PROJECT_NAME
+      --publish 80
+      --network traefik-public
+      --label "traefik.frontend.rule=Host:$CI_PROJECT_NAME.$DOMAIN"
+      --label "traefik.port=80"
+      --label "traefik.backend.loadbalancer.swarm=true"
+      --label "traefik.enable=true"
+      --label "traefik.tags=traefik-public"
+      --label "traefik.docker.network=traefik-public"
+      --label "traefik.webservice.frontend.entryPoints=http,https"
+      --detach --placement-pref 'spread=node.hostname'
+      --constraint 'node.hostname==node'
+      $IMAGE
   environment:
     name: $CI_PROJECT_NAME
     url: https://$CI_PROJECT_NAME.$DOMAIN
@@ -70,6 +100,8 @@ stop_node:
   environment:
     name: review/$CI_COMMIT_REF_NAME
     action: stop
+  only:
+    - master
 
 stop_review:
   stage: deploy
@@ -84,3 +116,18 @@ stop_review:
   environment:
     name: review/$CI_COMMIT_REF_NAME
     action: stop
+  except:
+    - master
+
+code_quality:
+  allow_failure: true
+  script:
+    - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
+    - docker run
+      --env SOURCE_CODE="$PWD"
+      --volume "$PWD":/code
+      --volume /var/run/docker.sock:/var/run/docker.sock
+      "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
+  artifacts:
+    reports:
+      codequality: gl-code-quality-report.json
