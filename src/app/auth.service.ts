@@ -14,22 +14,22 @@ export class AuthService {
   }
 
   GoogleAuth() {
-    // return this.AuthLogin(new firebase.auth.GoogleAuthProvider());
+    return this.AuthLogin(new firebase.auth.GoogleAuthProvider());
 
     // Auth logic to run auth providers with signInWithRedirect
-    return this.afAuth.auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider());
+    // return this.afAuth.auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider());
   }
 
   // Auth logic to run auth providers with signInWithPopup
 
-  // AuthLogin(provider) {
-  //   return this.afAuth.auth.signInWithPopup(provider)
-  //   .then((result) => {
-  //       console.log('You have been successfully logged in!')
-  //   }).catch((error) => {
-  //       console.log(error)
-  //   })
-  // }
+  AuthLogin(provider) {
+    return this.afAuth.auth.signInWithPopup(provider)
+      .then((result) => {
+        console.log('You have been successfully logged in!');
+      }).catch((error) => {
+        console.log(error);
+      });
+  }
 
   logout() {
     this.afAuth.auth.signOut();
